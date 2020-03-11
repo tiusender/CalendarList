@@ -25,7 +25,6 @@ public struct CalendarList<T:Hashable, Content:View>: View {
     
     @State public var selectedDate:Date = Date()
     
-    private let calendarDayWidth = (UIScreen.main.bounds.width - 20) / 7
     private let calendarDayHeight:CGFloat = 60
     private let calendar:Calendar
     
@@ -61,40 +60,49 @@ public struct CalendarList<T:Hashable, Content:View>: View {
         
         self.viewForEventBlock = viewForEvent
     }
-
+    
+    #if os(macOS)
+    public var body: some View {
+        commonBody
+    }
+    #else
     public var body: some View {
         NavigationView {
-            VStack {
-                VStack {
-                    CalendarMonthHeader(calendar: self.months[1].calendar, calendarDayWidth: self.calendarDayWidth, calendarDayHeight: self.calendarDayHeight)
-                                    
-                    HStack(alignment: .top) {
-                        PagerView(pageCount: self.months.count, currentIndex: self.$currentPage, pageChanged: self.updateMonthsAfterPagerSwipe) {
-                            ForEach(self.months, id:\.key) { month in
-                                CalendarMonthView(month: month,
-                                                  calendar: self.months[1].calendar,
-                                                  selectedDate: self.$selectedDate,
-                                                  calendarDayWidth: self.calendarDayWidth,
-                                                  calendarDayHeight: self.calendarDayHeight,
-                                                  eventsForDate: self.events,
-                                                  selectedDateColor: self.selectedDateColor,
-                                                  todayDateColor: self.todayDateColor)
-                            }
-                        }
-                    }
-                    .frame(height: CGFloat(self.months[1].weeks.count) * self.calendarDayHeight)
-                }
-                
-                Divider()
-                            
-                List {
-                    ForEach(eventsForSelectedDate(), id:\.data) { event in
-                        self.viewForEventBlock(event)
-                    }
-                }
-            }
+            commonBody
             .navigationBarTitle("\(self.months[self.currentPage].monthTitle())", displayMode: .inline)
             .navigationBarItems(leading: leadingButtons(), trailing: trailingButtons())
+        }
+    }
+    #endif
+
+    public var commonBody: some View {
+        VStack {
+            VStack {
+                CalendarMonthHeader(calendar: self.months[1].calendar, calendarDayHeight: self.calendarDayHeight)
+                                
+                HStack(alignment: .top) {
+                    PagerView(pageCount: self.months.count, currentIndex: self.$currentPage, pageChanged: self.updateMonthsAfterPagerSwipe) {
+                        ForEach(self.months, id:\.key) { month in
+                            CalendarMonthView(month: month,
+                                              calendar: self.months[1].calendar,
+                                              selectedDate: self.$selectedDate,
+                                              calendarDayHeight: self.calendarDayHeight,
+                                              eventsForDate: self.events,
+                                              selectedDateColor: self.selectedDateColor,
+                                              todayDateColor: self.todayDateColor)
+                        }
+                    }
+                }
+                .frame(height: CGFloat(self.months[1].weeks.count) * self.calendarDayHeight)
+            }
+            
+            Divider()
+                        
+            List {
+                ForEach(eventsForSelectedDate(), id:\.data) { event in
+                    self.viewForEventBlock(event)
+                }
+            }
         }
     }
     
@@ -127,7 +135,11 @@ public struct CalendarList<T:Hashable, Content:View>: View {
                 self.months = self.months.first!.getSurroundingMonths()
             }
         }) {
+            #if !os(macOS)
             Image(systemName: "lessthan").font(.body)
+            #else
+            Text("<").font(.body)
+            #endif
         }
     }
     
@@ -147,7 +159,11 @@ public struct CalendarList<T:Hashable, Content:View>: View {
                     self.months = self.months.last!.getSurroundingMonths()
                 }
             }) {
+                #if !os(macOS)
                 Image(systemName: "greaterthan").font(.body)
+                #else
+                Text(">").font(.body)
+                #endif
             }
         }
     }

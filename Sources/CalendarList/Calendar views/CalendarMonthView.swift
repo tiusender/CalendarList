@@ -15,7 +15,6 @@ struct CalendarMonthView<T:Hashable>: View {
     
     @Binding var selectedDate:Date
     
-    let calendarDayWidth:CGFloat
     let calendarDayHeight:CGFloat
     
     let eventsForDate:[Date:[CalendarEvent<T>]]
@@ -24,44 +23,50 @@ struct CalendarMonthView<T:Hashable>: View {
     let todayDateColor:Color
     
     var body: some View {
-        VStack(spacing: 0) {
-            ForEach(self.month.weeks, id:\.self) { week in
-                HStack(spacing: 0) {
-                    if week.count < 7 && self.containsFirstDayOfMonth(week) {
-                        ForEach(1 ... 7 - week.count, id:\.self) { num in
-                            Text("")
-                                .frame(width: self.calendarDayWidth,
-                                       height: self.calendarDayHeight)
-                                
-                        }
-                    }
-
-                    ForEach(week, id:\.self) { day in
-                        CalendarViewDay(calendar: self.calendar,
-                                        day: day,
-                                        selected: CalendarUtils.isSameDay(date1:self.selectedDate, date2:day, calendar: self.calendar),
-                                        hasEvents: self.dayHasEvents(day),
-                                        width: self.calendarDayWidth,
-                                        height: self.calendarDayHeight,
-                                        selectedDateColor: self.selectedDateColor,
-                                        todayDateColor: self.todayDateColor)
-                            .onTapGesture {
-                                self.selectedDate = day
+        GeometryReader { geometry in
+            VStack(spacing: 0) {
+                ForEach(self.month.weeks, id:\.self) { week in
+                    HStack(spacing: 0) {
+                        if week.count < 7 && self.containsFirstDayOfMonth(week) {
+                            ForEach(1 ... 7 - week.count, id:\.self) { num in
+                                Text("")
+                                    .frame(width: self.dayViewWidth(parentWidth: geometry.size.width),
+                                           height: self.calendarDayHeight)
+                                    
                             }
-                    }
+                        }
 
-                    if week.count < 7 && !self.containsFirstDayOfMonth(week) {
-                        ForEach(1 ... 7 - week.count, id:\.self) { num in
-                            Text("")
-                            .frame(width: self.calendarDayWidth,
-                                   height: self.calendarDayHeight)
+                        ForEach(week, id:\.self) { day in
+                            CalendarViewDay(calendar: self.calendar,
+                                            day: day,
+                                            selected: CalendarUtils.isSameDay(date1:self.selectedDate, date2:day, calendar: self.calendar),
+                                            hasEvents: self.dayHasEvents(day),
+                                            width: self.dayViewWidth(parentWidth: geometry.size.width),
+                                            height: self.calendarDayHeight,
+                                            selectedDateColor: self.selectedDateColor,
+                                            todayDateColor: self.todayDateColor)
+                                .onTapGesture {
+                                    self.selectedDate = day
+                                }
+                        }
+
+                        if week.count < 7 && !self.containsFirstDayOfMonth(week) {
+                            ForEach(1 ... 7 - week.count, id:\.self) { num in
+                                Text("")
+                                .frame(width: self.dayViewWidth(parentWidth: geometry.size.width),
+                                       height: self.calendarDayHeight)
+                            }
                         }
                     }
+                        
+                    .padding([.leading, .trailing], 10)
                 }
-                    
-                .padding([.leading, .trailing], 10)
             }
         }
+    }
+        
+    func dayViewWidth(parentWidth:CGFloat) -> CGFloat {
+        return (parentWidth - 20) / 7
     }
     
     func containsFirstDayOfMonth(_ dates:[Date]) -> Bool {
