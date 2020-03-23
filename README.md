@@ -44,7 +44,7 @@ struct ContentView: View {
 
 This results in the following:
 
-<img alt="Screenshot" src="screenshot1.gif">
+<img src="Resources/screenshot1.gif" width="40%">
 
 
 ## Requirements
