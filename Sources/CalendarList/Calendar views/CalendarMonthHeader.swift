@@ -28,7 +28,7 @@ struct CalendarMonthHeader:View {
                     }
                 }
             }
-        }
+        }.frame(height: self.calendarDayHeight/2)
     }
     
     func dayViewWidth(parentWidth:CGFloat) -> CGFloat {
