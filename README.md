@@ -44,7 +44,7 @@ struct ContentView: View {
 
 This results in the following:
 
-<img src="Resources/Video1.gif" width="50%">
+<img src="Resources/Video1.gif" width="40%">
 
 
 ## Requirements
