@@ -28,10 +28,10 @@ This is a very basic example using `String` as type for the data and a `Text` vi
 ```swift
 struct ContentView: View {
     var events = [
-        CalendarEvent(dateString: "03/18/2020", data: "Event 1"),
-        CalendarEvent(dateString: "03/21/2020", data: "Event 2"),
-        CalendarEvent(dateString: "03/23/2020", data: "Event 3"),
-        CalendarEvent(dateString: "03/23/2020", data: "Event 4"),
+        CalendarEvent(dateString: "03/21/2020", data: "Event 1"),
+        CalendarEvent(dateString: "03/23/2020", data: "Event 2"),
+        CalendarEvent(dateString: "03/26/2020", data: "Event 3"),
+        CalendarEvent(dateString: "03/26/2020", data: "Event 4"),
     ]
     
     var body: some View {
