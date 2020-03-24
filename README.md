@@ -1,5 +1,7 @@
 # CalendarList
 
+![GitHub last commit](https://img.shields.io/github/last-commit/tiusender/CalendarList)
+
 SwiftUI view to display paginated calendar months and list events per selected day.
 
 - [Features](#features)
