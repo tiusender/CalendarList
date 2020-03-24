@@ -26,7 +26,7 @@ SwiftUI view to display paginated calendar months and list events per selected d
 CalendarList takes two main arguments:
 
 - Array of `CalendarEvent` elements. This type wraps the date for the event and the actual data you want to use. As long as the data comforms to the `Hashable` protocol, you can use any type you want.
-- A`@ViewBuilder` block that will be used to generate the view that represents an event on a given day.
+- A `@ViewBuilder` block that will be used to generate the view that represents an event on a given day.
 
 This is a very basic example using `String` as type for the data and a `Text` view to represent the event data:
 
